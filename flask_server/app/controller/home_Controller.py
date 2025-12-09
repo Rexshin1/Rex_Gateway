@@ -44,8 +44,7 @@ class HomeController:
                 except:
                     pass
             
-            # 3. LOGIKA PAKSA: Kalau Suhu 0 (Windows), kita buat simulasi
-            # Rumus: Dasar 40 derajat + (CPU Usage dibagi 2) + sedikit acak
+            
             if temp == 0:
                 temp = 40 + (cpu / 2) + random.uniform(-1.5, 1.5)
 

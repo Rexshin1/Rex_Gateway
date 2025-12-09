@@ -33,21 +33,36 @@ class DeviceController:
                 # Create initial data record with default values based on type
                 # Set irrelevant fields to None so they appear as "-" in the UI
                 initial_power = 220.0 if type_device == 'power' else None
+                initial_voltage = 220.0 if type_device == 'power' else None
+                initial_current = 1.0 if type_device == 'power' else None
+                initial_frequency = 50.0 if type_device == 'power' else None
+                initial_energy = 0.5 if type_device == 'power' else None
                 initial_humidity = 60.0 if type_device == 'humidity' else None
                 initial_temperature = 25.0 if type_device == 'temperature' else None
                 initial_weather = "Cerah" if type_device == 'weather' else None
                 initial_lux = 300.0 if type_device == 'lux' else None
+                initial_water = 0.0 if type_device == 'water' else None
+                initial_water_level = 0.0 if type_device == 'water' else None
+                initial_total_volume = 0.0 if type_device == 'water' else None
 
                 new_record = DeviceRecord(
                     device_id=device_id,
                     power=initial_power,
+                    voltage=initial_voltage,
+                    current=initial_current,
+                    frequency=initial_frequency,
+                    energy=initial_energy,
                     humidity=initial_humidity,
                     temperature=initial_temperature,
                     weather=initial_weather,
                     fire=0 if type_device == 'fire' else None,
                     gas=0.0 if type_device == 'gas' else None,
                     smoke=0.0 if type_device == 'smoke' else None,
-                    lux=initial_lux
+
+                    lux=initial_lux,
+                    water=initial_water,
+                    water_level=initial_water_level,
+                    total_volume=initial_total_volume
                 )
                 db.session.add(new_record)
                 db.session.commit()

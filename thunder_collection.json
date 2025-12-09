@@ -136,6 +136,146 @@
         "form": []
       },
       "tests": []
+    },
+    {
+      "containerId": "",
+      "sortNum": 60000,
+      "headers": [
+        {
+          "name": "X-API-TOKEN",
+          "value": "LOOK-SECURE-TOKEN-2024"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "colId": "look_gateway_collection",
+      "name": "Add Power Data",
+      "url": "http://127.0.0.1:5001/api/add_data_record",
+      "method": "POST",
+      "modified": "2025-12-08T08:00:00.000Z",
+      "created": "2025-12-08T08:00:00.000Z",
+      "_id": "req_add_power",
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"device_id\": \"ID_001\",\n  \"power\": 220.5,\n  \"voltage\": 220.0,\n  \"current\": 1.2,\n  \"frequency\": 50.0,\n  \"energy\": 10.5\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "containerId": "",
+      "sortNum": 70000,
+      "headers": [
+        {
+          "name": "X-API-TOKEN",
+          "value": "LOOK-SECURE-TOKEN-2024"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "colId": "look_gateway_collection",
+      "name": "Add Weather Data",
+      "url": "http://127.0.0.1:5001/api/add_data_record",
+      "method": "POST",
+      "modified": "2025-12-08T08:00:00.000Z",
+      "created": "2025-12-08T08:00:00.000Z",
+      "_id": "req_add_weather",
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"device_id\": \"ID_002\",\n  \"temperature\": 28.5,\n  \"humidity\": 60.5,\n  \"weather\": \"Cerah\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "containerId": "",
+      "sortNum": 80000,
+      "headers": [
+        {
+          "name": "X-API-TOKEN",
+          "value": "LOOK-SECURE-TOKEN-2024"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "colId": "look_gateway_collection",
+      "name": "Add Safety Data",
+      "url": "http://127.0.0.1:5001/api/add_data_record",
+      "method": "POST",
+      "modified": "2025-12-08T08:00:00.000Z",
+      "created": "2025-12-08T08:00:00.000Z",
+      "_id": "req_add_safety",
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"device_id\": \"ID_003\",\n  \"fire\": 0,\n  \"gas\": 0.0,\n  \"smoke\": 0.0\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "containerId": "",
+      "sortNum": 90000,
+      "headers": [
+        {
+          "name": "X-API-TOKEN",
+          "value": "LOOK-SECURE-TOKEN-2024"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "colId": "look_gateway_collection",
+      "name": "Add Water Data",
+      "url": "http://127.0.0.1:5001/api/add_data_record",
+      "method": "POST",
+      "modified": "2025-12-08T08:00:00.000Z",
+      "created": "2025-12-08T08:00:00.000Z",
+      "_id": "req_add_water",
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"device_id\": \"ID_004\",\n  \"water_level\": 50.0,\n  \"total_volume\": 100.0\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "containerId": "",
+      "sortNum": 100000,
+      "headers": [
+        {
+          "name": "X-API-TOKEN",
+          "value": "LOOK-SECURE-TOKEN-2024"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "colId": "look_gateway_collection",
+      "name": "Add Lux Data",
+      "url": "http://127.0.0.1:5001/api/add_data_record",
+      "method": "POST",
+      "modified": "2025-12-08T08:00:00.000Z",
+      "created": "2025-12-08T08:00:00.000Z",
+      "_id": "req_add_lux",
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"device_id\": \"ID_005\",\n  \"lux\": 300.0\n}",
+        "form": []
+      },
+      "tests": []
     }
   ]
 }

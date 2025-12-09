@@ -46,6 +46,11 @@ def require_api_token(f):
 def add_device():
     return DeviceController.add_device()
 
+@api_app.route('/add_data_record', methods=['POST'])
+@csrf.exempt
+def add_data_record():
+    return DeviceController.add_data_record()
+
 @api_app.route('/update_device', methods=['POST'])
 @csrf.exempt
 def update_device():

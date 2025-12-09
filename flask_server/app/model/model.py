@@ -28,6 +28,10 @@ class DeviceRecord(db.Model):
     
     # Sensor Data Columns
     power = db.Column(db.Float, nullable=True)
+    voltage = db.Column(db.Float, nullable=True)
+    current = db.Column(db.Float, nullable=True)
+    frequency = db.Column(db.Float, nullable=True)
+    energy = db.Column(db.Float, nullable=True)
     humidity = db.Column(db.Float, nullable=True)
     temperature = db.Column(db.Float, nullable=True)
     weather = db.Column(db.String(50), nullable=True)
@@ -35,6 +39,9 @@ class DeviceRecord(db.Model):
     gas = db.Column(db.Float, nullable=True)
     smoke = db.Column(db.Float, nullable=True)
     lux = db.Column(db.Float, nullable=True)
+    water = db.Column(db.Float, nullable=True)
+    water_level = db.Column(db.Float, nullable=True)
+    total_volume = db.Column(db.Float, nullable=True)
     
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     
@@ -46,6 +53,10 @@ class DeviceRecord(db.Model):
             'id': self.id,
             'device_id': self.device_id,
             'power': self.power,
+            'voltage': self.voltage,
+            'current': self.current,
+            'frequency': self.frequency,
+            'energy': self.energy,
             'humidity': self.humidity,
             'temperature': self.temperature,
             'weather': self.weather,
@@ -53,6 +64,9 @@ class DeviceRecord(db.Model):
             'gas': self.gas,
             'smoke': self.smoke,
             'lux': self.lux,
+            'water': self.water,
+            'water_level': self.water_level,
+            'total_volume': self.total_volume,
             'created_at': self.created_at
         }
     
