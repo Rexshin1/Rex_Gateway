@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="Rex Gateway" src="https://github.com/rexshin/rex_gateway/blob/main/flask_server/app/static/assets/img/logo.png?raw=true" title="REX" width="350"/>
+<img alt="Rex Gateway" src="flask_server/app/static/assets/img/logo.png" title="REX" width="350"/>
 </p>
 
 
@@ -103,15 +103,15 @@ Rex Gateway adalah aplikasi untuk penghubung antara sensor maupun controller den
 │           ├── login.html
 │           ├── networking.html
 │           └── register.html
-├── config.ii
+├── config.ini
 ├── main.py
 └── requirements.txt
 ```
 ### Installation
-Clone ripository github:<br>
+Clone repository github:<br>
 
 ````
-$ git clone https://github.com/rexshin/rex_gateway.git
+$ git clone https://github.com/Rexshin1/Rex_Gateway.git
 ````
 Masuk dalam directory:
 ````
