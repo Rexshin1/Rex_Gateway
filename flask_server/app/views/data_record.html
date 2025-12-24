@@ -120,7 +120,6 @@
                         </div>
                     </div>
 
-
                     <div class="tab-pane fade" id="weather">
                         <div class="table-responsive">
                             <table class="table table-bordered table-condensed table-hover table-striped"
@@ -185,7 +184,6 @@
                         </div>
                     </div>
 
-
                     <div class="tab-pane fade" id="fire">
                         <div class="table-responsive">
                             <table class="table table-bordered table-condensed table-hover table-striped"
@@ -194,16 +192,22 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Device ID</th>
-                                        <th>Fire</th>
+                                        <th>Temperature (°C)</th>
+                                        <th>Smoke Level</th>
+                                        <th>Status</th>
                                         <th>Timestamp</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% if records %}
-                                    {% for record in records if record.fire is not none %}
+                                    {% for record in records if record.fire is not none or record.temperature is not
+                                    none or record.smoke is not none %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.temperature) if record.temperature is not none else
+                                            "-" }}</td>
+                                        <td>{{ "%.2f"|format(record.smoke) if record.smoke is not none else "-" }}</td>
                                         <td>{{ "Detected" if record.fire == 1 else "Safe" if record.fire == 0 else "-"
                                             }}</td>
                                         <td>{{ record.created_at|wib_format }}</td>
@@ -211,7 +215,7 @@
                                     {% endfor %}
                                     {% else %}
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                        <td colspan="6" class="text-center text-muted">Tidak ada data</td>
                                     </tr>
                                     {% endif %}
                                 </tbody>
@@ -227,17 +231,24 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Device ID</th>
-                                        <th>Gas</th>
+                                        <th>Gas (Mapped)</th>
+                                        <th>Gas PPM</th>
+                                        <th>Voltage (V)</th>
                                         <th>Timestamp</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% if records %}
-                                    {% for record in records if record.gas is not none %}
+                                    {% for record in records if record.gas is not none or record.gas_ppm is not none or
+                                    record.gas_voltage is not none %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ record.device_id }}</td>
                                         <td>{{ "%.2f"|format(record.gas) if record.gas is not none else "-" }}</td>
+                                        <td>{{ "%.2f"|format(record.gas_ppm) if record.gas_ppm is not none else "-" }}
+                                        </td>
+                                        <td>{{ "%.2f"|format(record.gas_voltage) if record.gas_voltage is not none else
+                                            "-" }}</td>
                                         <td>{{ record.created_at|wib_format }}</td>
                                     </tr>
                                     {% endfor %}
@@ -269,13 +280,15 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ record.device_id }}</td>
-                                        <td>{{ "%.2f"|format(record.smoke) if record.smoke is not none else "-" }}</td>
+                                        <td>{{ "%.2f"|format(record.smoke) if record.smoke is not none
+                                            else "-" }}</td>
                                         <td>{{ record.created_at|wib_format }}</td>
                                     </tr>
                                     {% endfor %}
                                     {% else %}
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data
+                                        </td>
                                     </tr>
                                     {% endif %}
                                 </tbody>
@@ -298,21 +311,26 @@
                                 </thead>
                                 <tbody>
                                     {% if records %}
-                                    {% for record in records if record.water_level is not none or record.total_volume is
+                                    {% for record in records if record.water_level is not none or
+                                    record.total_volume is
                                     not none or record.water is not none %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ record.device_id }}</td>
-                                        <td>{{ "%.2f"|format(record.water_level) if record.water_level is not none else
-                                            ("%.2f"|format(record.water) if record.water is not none else "-") }}</td>
-                                        <td>{{ "%.2f"|format(record.total_volume) if record.total_volume is not none
+                                        <td>{{ "%.2f"|format(record.water_level) if record.water_level
+                                            is not none else
+                                            ("%.2f"|format(record.water) if record.water is not none
+                                            else "-") }}</td>
+                                        <td>{{ "%.2f"|format(record.total_volume) if record.total_volume
+                                            is not none
                                             else "-" }}</td>
                                         <td>{{ record.created_at|wib_format }}</td>
                                     </tr>
                                     {% endfor %}
                                     {% else %}
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">Tidak ada data</td>
+                                        <td colspan="5" class="text-center text-muted">Tidak ada data
+                                        </td>
                                     </tr>
                                     {% endif %}
                                 </tbody>

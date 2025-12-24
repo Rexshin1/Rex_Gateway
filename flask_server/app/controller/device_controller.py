@@ -9,7 +9,10 @@ class DeviceController:
     
     @staticmethod
     def list_devices():
-        data = Device.query.all()
+        if current_user.is_authenticated:
+            data = Device.query.filter_by(user_id=current_user.id).all()
+        else:
+            data = []
         page = {"title":"Dashboard"}
         user = User.query.filter(User.id==current_user.id).first()
         return render_template('device_list.html',page=page,user=user,data=data)
@@ -26,8 +29,14 @@ class DeviceController:
                 flash('Nama device dan device ID harus diisi', 'danger')
                 return redirect(url_for('app.add_device'))
 
+            # Check for existing device with SAME ID AND SAME TYPE
+            existing = Device.query.filter_by(device_id=device_id, type_device=type_device).first()
+            if existing:
+                flash(f'Device ID {device_id} untuk tipe {type_device} sudah ada!', 'danger')
+                return redirect(url_for('app.add_device'))
+
             try:
-                new_device = Device(device_name=device_name, device_id=device_id, type_device=type_device, status=status)
+                new_device = Device(device_name=device_name, device_id=device_id, type_device=type_device, status=status, user_id=current_user.id)
                 db.session.add(new_device)
 
                 # Create initial data record with default values based on type
@@ -37,13 +46,19 @@ class DeviceController:
                 initial_current = 1.0 if type_device == 'power' else None
                 initial_frequency = 50.0 if type_device == 'power' else None
                 initial_energy = 0.5 if type_device == 'power' else None
-                initial_humidity = 60.0 if type_device == 'humidity' else None
-                initial_temperature = 25.0 if type_device == 'temperature' else None
+
+                # Consolidated humidity-temp type
+                initial_humidity = 60.0 if type_device == 'humidity-temp' else None
+                initial_temperature = 25.0 if type_device == 'humidity-temp' else None
+                
                 initial_weather = "Cerah" if type_device == 'weather' else None
                 initial_lux = 300.0 if type_device == 'lux' else None
                 initial_water = 0.0 if type_device == 'water' else None
                 initial_water_level = 0.0 if type_device == 'water' else None
                 initial_total_volume = 0.0 if type_device == 'water' else None
+
+                initial_gas_ppm = 150.0 if type_device == 'gas' else None
+                initial_gas_voltage = 1.5 if type_device == 'gas' else None
 
                 new_record = DeviceRecord(
                     device_id=device_id,
@@ -57,6 +72,8 @@ class DeviceController:
                     weather=initial_weather,
                     fire=0 if type_device == 'fire' else None,
                     gas=0.0 if type_device == 'gas' else None,
+                    gas_ppm=initial_gas_ppm,
+                    gas_voltage=initial_gas_voltage,
                     smoke=0.0 if type_device == 'smoke' else None,
 
                     lux=initial_lux,
@@ -80,7 +97,7 @@ class DeviceController:
 
     @staticmethod
     def view_device(device_id):
-        device = Device.query.filter_by(device_id=device_id).first()
+        device = Device.query.filter_by(device_id=device_id, user_id=current_user.id).first()
         if not device:
             flash('Device tidak ditemukan', 'danger')
             return redirect(url_for('app.list_device'))
@@ -91,7 +108,7 @@ class DeviceController:
 
     @staticmethod
     def edit_device(device_id):
-        device = Device.query.filter_by(device_id=device_id).first()
+        device = Device.query.filter_by(device_id=device_id, user_id=current_user.id).first()
         if not device:
             flash('Device tidak ditemukan', 'danger')
             return redirect(url_for('app.list_device'))
@@ -128,7 +145,7 @@ class DeviceController:
                 }
                 return jsonify(data),400
             try:
-                device = Device.query.filter_by(device_id=device_id).first()
+                device = Device.query.filter_by(device_id=device_id, user_id=current_user.id).first()
                 if device:
                     device.device_name = device_name
                     device.type_device = type_device
@@ -160,7 +177,7 @@ class DeviceController:
     @staticmethod
     def delete_device(device_id):
         try:
-            device_to_delete = Device.query.filter_by(device_id=device_id).first()
+            device_to_delete = Device.query.filter_by(device_id=device_id, user_id=current_user.id).first()
             if device_to_delete:
                 db.session.delete(device_to_delete)
                 db.session.commit()
@@ -177,10 +194,15 @@ class DeviceController:
     
     @staticmethod
     def data_record():
-        # Ambil semua data record dari database dan urutkan by timestamp terbaru
+        # Ambil semua data record milik user
         page = {"title": "Data Record"}
         user = User.query.filter(User.id == current_user.id).first()
-        records = DeviceRecord.query.order_by(DeviceRecord.created_at.desc()).all()
+        records = []
+        if current_user.is_authenticated:
+            # Join with Device table to ensure ownership
+            records = DeviceRecord.query.join(Device, DeviceRecord.device_id == Device.device_id)\
+                                      .filter(Device.user_id == current_user.id)\
+                                      .order_by(DeviceRecord.created_at.desc()).all()
         return render_template('data_record.html', page=page, user=user, records=records)
 
     @staticmethod

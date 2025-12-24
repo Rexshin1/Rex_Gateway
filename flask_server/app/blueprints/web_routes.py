@@ -4,6 +4,8 @@ from flask_server.app.controller.device_controller import DeviceController
 from flask_server.app.controller.home_Controller import HomeController
 from flask_server.app.controller.auth_controller import AuthController
 from flask_server.app.controller.network_controller import DeviceNetwork
+from flask_server.app.controller.settings_controller import SettingsController
+from flask_server.app.controller.user_controller import UserController
 from datetime import datetime, timedelta
 
 web_app = Blueprint('app', __name__, url_prefix="/") 
@@ -35,6 +37,8 @@ def logout():
 
 @web_app.route('/register', methods=['GET','POST'])
 def register():
+    return AuthController.register()
+
     return AuthController.register()
 
 @web_app.route('/', methods=['GET'])
@@ -98,3 +102,54 @@ def edit_device(device_id):
 @login_required
 def delete_device(device_id):
     return DeviceController.delete_device(device_id)
+
+@web_app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    return SettingsController.settings()
+
+@web_app.route('/settings/add_endpoint', methods=['POST'])
+@login_required
+def add_endpoint():
+    return SettingsController.add_endpoint()
+
+@web_app.route('/settings/delete_endpoint/<id>', methods=['GET'])
+@login_required
+def delete_endpoint(id):
+    return SettingsController.delete_endpoint(id)
+
+@web_app.route('/settings/toggle_endpoint/<id>', methods=['GET'])
+@login_required
+def toggle_endpoint(id):
+    return SettingsController.toggle_endpoint(id)
+
+@web_app.route('/settings/test_connection', methods=['POST'])
+@login_required
+def test_connection():
+    return SettingsController.test_connection()
+
+# --- USER MANAGEMENT ---
+@web_app.route('/users', methods=['GET'])
+@login_required
+def users():
+    return UserController.index()
+
+@web_app.route('/users/add', methods=['POST'])
+@login_required
+def add_user():
+    return UserController.add_user()
+
+@web_app.route('/users/edit/<user_id>', methods=['POST'])
+@login_required
+def edit_user(user_id):
+    return UserController.edit_user(user_id)
+
+@web_app.route('/users/delete/<user_id>', methods=['GET'])
+@login_required
+def delete_user(user_id):
+    return UserController.delete_user(user_id)
+
+@web_app.route('/profile', methods=['GET'])
+@login_required
+def profile():
+    return UserController.profile()

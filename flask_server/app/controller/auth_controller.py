@@ -89,5 +89,38 @@ class AuthController:
             # Generate a JWT token if credentials are valid
             access_token = create_access_token(identity=email)
             return jsonify(access_token=access_token), 200
-        else:
-            return jsonify({"message": "Invalid credentials"}), 401
+        return jsonify({"message": "Invalid credentials"}), 401
+
+    @staticmethod
+    def api_register():
+        try:
+            # Ambil data JSON
+            data = request.get_json()
+            if not data:
+                return jsonify({"status": "error", "message": "No input data provided"}), 400
+
+            username = data.get('username')
+            email = data.get('email')
+            password = data.get('password')
+
+            # Validasi input sederhana
+            if not username or not email or not password:
+                return jsonify({"status": "error", "message": "Username, email, and password are required"}), 400
+
+            # Cek user duplikat
+            existing_user = User.query.filter((User.email == email) | (User.username == username)).first()
+            if existing_user:
+                return jsonify({"status": "error", "message": "Email or Username already exists"}), 409
+
+            # Hash password dan simpan
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            new_user = User(username=username, email=email, password=hashed_password)
+            
+            db.session.add(new_user)
+            db.session.commit()
+
+            return jsonify({"status": "success", "message": "User registered successfully"}), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"status": "error", "message": str(e)}), 500

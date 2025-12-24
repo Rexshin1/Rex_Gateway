@@ -9,3 +9,4 @@ flask-wtf
 flask-jwt-extended
 psutil
 speedtest-cli
+python-dotenv

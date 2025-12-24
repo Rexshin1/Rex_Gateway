@@ -1,0 +1,237 @@
+{
+    "info": {
+        "_postman_id": "look-gateway-complete-collection-new",
+        "name": "Look Gateway COMPLETE (GET + POST)",
+        "description": "Koleksi lengkap request GET (Ambil Data) dan POST (Kirim Data Spesifik) untuk Look Gateway.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "GET Requests (Ambil Data)",
+            "item": [
+                {
+                    "name": "Get Power",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_power/ID_001"
+                    }
+                },
+                {
+                    "name": "Get Lux",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_lux/ID_002"
+                    }
+                },
+                {
+                    "name": "Get Gas",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_gas/ID_003"
+                    }
+                },
+                {
+                    "name": "Get Smoke",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_smoke/ID_004"
+                    }
+                },
+                {
+                    "name": "Get Water",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_water/ID_005"
+                    }
+                },
+                {
+                    "name": "Get Fire",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_fire/ID_006"
+                    }
+                },
+                {
+                    "name": "Get Weather",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_weather/ID_007"
+                    }
+                },
+                {
+                    "name": "Get Humidity/Temp",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "http://localhost:5001/api/get_humidity_temp/ID_008"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "POST Requests (Kirim Data Spesifik)",
+            "item": [
+                {
+                    "name": "Add New Device (Wajib Dulu)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_001\",\n    \"device_name\": \"Sensor Power Utama\",\n    \"type_device\": \"power\",\n    \"status\": \"active\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_device"
+                    }
+                },
+                {
+                    "name": "POST Power (/add_power)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_001\",\n    \"power\": 220.5,\n    \"voltage\": 221.0,\n    \"current\": 1.2,\n    \"frequency\": 50.0,\n    \"energy\": 10.5\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_power"
+                    }
+                },
+                {
+                    "name": "POST Lux (/add_lux)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_002\",\n    \"lux\": 450.0\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_lux"
+                    }
+                },
+                {
+                    "name": "POST Gas (/add_gas)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_003\",\n    \"gas_ppm\": 150.0,\n    \"gas_voltage\": 3.3\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_gas"
+                    }
+                },
+                {
+                    "name": "POST Smoke (/add_smoke)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_004\",\n    \"smoke\": 0.5\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_smoke"
+                    }
+                },
+                {
+                    "name": "POST Water (/add_water)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_005\",\n    \"water_level\": 80.0,\n    \"total_volume\": 500.0\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_water"
+                    }
+                },
+                {
+                    "name": "POST Fire (/add_fire)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_006\",\n    \"fire\": 1,\n    \"temperature\": 45.0,\n    \"smoke\": 10.0\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_fire"
+                    }
+                },
+                {
+                    "name": "POST Weather (/add_weather)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_007\",\n    \"weather\": \"Rainy\",\n    \"temperature\": 24.5\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_weather"
+                    }
+                },
+                {
+                    "name": "POST Humidity/Temp (/add_humidity_temp)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"ID_008\",\n    \"humidity\": 65.0,\n    \"temperature\": 26.5\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:5001/api/add_humidity_temp"
+                    }
+                }
+            ]
+        }
+    ]
+}

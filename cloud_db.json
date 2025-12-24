@@ -1,0 +1,242 @@
+[
+  {
+    "recv": "15:19:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:31:43\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:31:43"
+    }
+  },
+  {
+    "recv": "15:19:52",
+    "device_id": "ID_003",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_003\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:35:44\"\n}",
+    "payload": {
+      "device_id": "ID_003",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:35:44"
+    }
+  },
+  {
+    "recv": "15:19:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-19T07:00:23\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-19T07:00:23"
+    }
+  },
+  {
+    "recv": "15:19:52",
+    "device_id": "ID_001",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_001\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-24T01:47:04\"\n}",
+    "payload": {
+      "device_id": "ID_001",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-24T01:47:04"
+    }
+  },
+  {
+    "recv": "15:24:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:31:43\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:31:43"
+    }
+  },
+  {
+    "recv": "15:24:52",
+    "device_id": "ID_003",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_003\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:35:44\"\n}",
+    "payload": {
+      "device_id": "ID_003",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:35:44"
+    }
+  },
+  {
+    "recv": "15:24:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-19T07:00:23\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-19T07:00:23"
+    }
+  },
+  {
+    "recv": "15:24:52",
+    "device_id": "ID_001",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_001\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-24T01:47:04\"\n}",
+    "payload": {
+      "device_id": "ID_001",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-24T01:47:04"
+    }
+  },
+  {
+    "recv": "15:29:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:31:43\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:31:43"
+    }
+  },
+  {
+    "recv": "15:29:52",
+    "device_id": "ID_003",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_003\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:35:44\"\n}",
+    "payload": {
+      "device_id": "ID_003",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:35:44"
+    }
+  },
+  {
+    "recv": "15:29:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-19T07:00:23\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-19T07:00:23"
+    }
+  },
+  {
+    "recv": "15:29:52",
+    "device_id": "ID_001",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_001\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-24T01:47:04\"\n}",
+    "payload": {
+      "device_id": "ID_001",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-24T01:47:04"
+    }
+  },
+  {
+    "recv": "15:34:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:31:43\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:31:43"
+    }
+  },
+  {
+    "recv": "15:34:52",
+    "device_id": "ID_003",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_003\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-18T03:35:44\"\n}",
+    "payload": {
+      "device_id": "ID_003",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-18T03:35:44"
+    }
+  },
+  {
+    "recv": "15:34:52",
+    "device_id": "ID_002",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_002\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-19T07:00:23\"\n}",
+    "payload": {
+      "device_id": "ID_002",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-19T07:00:23"
+    }
+  },
+  {
+    "recv": "15:34:52",
+    "device_id": "ID_001",
+    "type": "power",
+    "raw_str": "{\n  \"device_id\": \"ID_001\",\n  \"kuat\": 220.0,\n  \"voltage\": 220.0,\n  \"current\": 1.0,\n  \"energy\": 0.5,\n  \"frequency\": 50.0,\n  \"timestamp\": \"2025-12-24T01:47:04\"\n}",
+    "payload": {
+      "device_id": "ID_001",
+      "kuat": 220.0,
+      "voltage": 220.0,
+      "current": 1.0,
+      "energy": 0.5,
+      "frequency": 50.0,
+      "timestamp": "2025-12-24T01:47:04"
+    }
+  }
+]

@@ -1,11 +1,11 @@
 <p align="center">
-<img alt="Look Gateway" src="https://github.com/Javadwipa/look_gateway/blob/main/flask_server/app/static/assets/img/logo.png?raw=true" title="LOOK" width="350"/>
+<img alt="Rex Gateway" src="https://github.com/rexshin/rex_gateway/blob/main/flask_server/app/static/assets/img/logo.png?raw=true" title="REX" width="350"/>
 </p>
 
 
-# LOOK GATEWAY
+# REX GATEWAY
 
-Look APP Gateway adalah aplikasi untuk penghubung antara sensor maupun controller dengan server
+Rex Gateway adalah aplikasi untuk penghubung antara sensor maupun controller dengan server
 
 ### Sensor Device: 
 <table width="100%" valign="top">
@@ -111,20 +111,20 @@ Look APP Gateway adalah aplikasi untuk penghubung antara sensor maupun controlle
 Clone ripository github:<br>
 
 ````
-$ git clone https://github.com/Javadwipa/look_gateway.git
+$ git clone https://github.com/rexshin/rex_gateway.git
 ````
 Masuk dalam directory:
 ````
-$ cd look_gateway/
+$ cd rex_gateway/
 ````
 Membuat environment:
 ````
-$ python venv .env
+$ python venv env
 ````
 Mengaktifkan environment:
 ````
 Linux or Mac:
- $ source .env/bin/activate 
+ $ source env/bin/activate 
 
 Windows:
  $ .\venv\Scripts\activate

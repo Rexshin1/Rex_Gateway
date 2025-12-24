@@ -1,20 +1,18 @@
 import os
-import configparser
+from dotenv import load_dotenv
 
+load_dotenv()
 
-
-conf = configparser.ConfigParser()
-conf.read('config.ini')
-
-device_id = conf['APP']['GATEWAY_ID']
-port_app = conf['APP']['PORT_WEB']
-hostmqtt = conf['MQTT']['HOST']
-port_mqtt = conf['MQTT']['PORT']
-user_mqtt = conf['MQTT']['USERNAME']
-pass_mqtt = conf['MQTT']['PASSWORD']
-secret_key = conf['APP']['SECRET_KEY']
-database = conf['APP']['DATABASE']
-token_api = conf['SERVER_API']['TOKEN_API']
+device_id = os.getenv('GATEWAY_ID')
+port_app = int(os.getenv('PORT_WEB', 5001))
+hostmqtt = os.getenv('MQTT_HOST')
+port_mqtt = int(os.getenv('MQTT_PORT', 1883))
+user_mqtt = os.getenv('MQTT_USERNAME')
+pass_mqtt = os.getenv('MQTT_PASSWORD')
+secret_key = os.getenv('SECRET_KEY')
+database = os.getenv('DATABASE', 'app.db')
+token_api = os.getenv('TOKEN_API')
+host_api = os.getenv('HOST_API')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, database)

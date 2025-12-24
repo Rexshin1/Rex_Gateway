@@ -1,4 +1,5 @@
-from core import MqttSensor,SystemInfo
+from core import MqttSensor, SystemInfo
+from core.send_server import CloudSender
 from config import config
 import threading
 
@@ -11,9 +12,13 @@ from datetime import datetime, timedelta
 
 app = create_app()
 
+from flask_server.app.scheduler import init_scheduler
+
 def start_flask():
     with app.app_context():
         db.create_all()
+        # Start Auto-Sync Scheduler
+        init_scheduler(app)
        
     app.run(host='0.0.0.0',port=config.port_app,debug=True,threaded=False ,use_reloader=False)
 
@@ -53,6 +58,8 @@ def process_sensor_data(payload):
                 weather=str(data.get('weather')) if data.get('weather') is not None else None,
                 fire=int(data.get('fire')) if data.get('fire') is not None else None,
                 gas=float(data.get('gas')) if data.get('gas') is not None else None,
+                gas_ppm=float(data.get('gas_ppm')) if data.get('gas_ppm') is not None else None,
+                gas_voltage=float(data.get('gas_voltage')) if data.get('gas_voltage') is not None else None,
                 smoke=float(data.get('smoke')) if data.get('smoke') is not None else None,
                 lux=float(data.get('lux')) if data.get('lux') is not None else None
             )
@@ -60,6 +67,12 @@ def process_sensor_data(payload):
             db.session.add(record)
             db.session.commit()
             print(f"Saved data for device {device_id}")
+
+            # Send to Cloud
+            try:
+                CloudSender.send_data(record.to_dict())
+            except Exception as e:
+                print(f"Cloud sync error: {e}")
 
     except json.JSONDecodeError:
         print("Error: Failed to decode JSON payload")

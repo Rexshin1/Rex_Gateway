@@ -7,6 +7,8 @@ class Device(db.Model):
     device_name = db.Column(db.String(100), nullable=False)
     type_device = db.Column(db.String(20), nullable=False)
     status = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # Linked to User
+    user = db.relationship('User', backref=db.backref('devices', cascade='all, delete-orphan'))
 
     def __repr__(self):
         return f"<Device {self.device_id} - ${self.type_device}>"
@@ -37,6 +39,8 @@ class DeviceRecord(db.Model):
     weather = db.Column(db.String(50), nullable=True)
     fire = db.Column(db.Integer, nullable=True) # 0 or 1
     gas = db.Column(db.Float, nullable=True)
+    gas_ppm = db.Column(db.Float, nullable=True)
+    gas_voltage = db.Column(db.Float, nullable=True)
     smoke = db.Column(db.Float, nullable=True)
     lux = db.Column(db.Float, nullable=True)
     water = db.Column(db.Float, nullable=True)
@@ -62,6 +66,8 @@ class DeviceRecord(db.Model):
             'weather': self.weather,
             'fire': self.fire,
             'gas': self.gas,
+            'gas_ppm': self.gas_ppm,
+            'gas_voltage': self.gas_voltage,
             'smoke': self.smoke,
             'lux': self.lux,
             'water': self.water,
@@ -70,6 +76,29 @@ class DeviceRecord(db.Model):
             'created_at': self.created_at
         }
     
+class EndpointConfig(db.Model):
+    __tablename__ = 'endpoint_configs'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    url = db.Column(db.String(255), nullable=False)
+    method = db.Column(db.String(10), default='POST')
+    headers = db.Column(db.Text, nullable=True) # JSON string
+    mapping = db.Column(db.Text, nullable=True) # JSON string, e.g. {"gw_id": "Gateway ID"}
+    is_active = db.Column(db.Boolean, default=True)
+    target_device_type = db.Column(db.String(50), nullable=True) # Filter by device type, e.g. 'power'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'url': self.url,
+            'method': self.method,
+            'headers': self.headers,
+            'mapping': self.mapping,
+            'is_active': self.is_active,
+            'target_device_type': self.target_device_type
+        }
+
 class NetworkDevice(db.Model):
     __tablename__ = 'network_devices'
     id = db.Column(db.Integer, primary_key=True)
