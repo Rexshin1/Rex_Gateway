@@ -1,6 +1,4 @@
-<p align="center">
-<img alt="Rex Gateway" src="flask_server/app/static/assets/img/logo.png" title="REX" width="350"/>
-</p>
+
 
 
 # REX GATEWAY
