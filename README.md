@@ -5,47 +5,52 @@
 
 Rex Gateway adalah aplikasi untuk penghubung antara sensor maupun controller dengan server
 
-### Sensor Device: 
+### Sensor Device Support: 
 <table width="100%" valign="top">
 <tr>
 <td>
     <ul>
-<li>Sensor Power Meter</li>
-<li> Sensor Water (AWLR & Water Quallity)</li>
-<li> Sensor Humidity</li>
-<li> Sensor Temperature</li>
-<li> Wheather Station</li>
+        <li><b>Sensor Power Meter</b> (Voltage, Current, Watt, kWh)</li>
+        <li><b>Sensor Water</b> (Ultrasonic Level, AWLR, & Water Quality)</li>
+        <li><b>Sensor Environmental</b> (Humidity & Temperature)</li>
+        <li><b>Weather Station</b> (Rain, Wind Speed, Direction)</li>
     </ul>
 </td>
 <td>
     <ul>
-<li>Fire Detection</li>
-<li>Smoke Detection</li>
-<li>Gas Metering</li>
-<li>LUX Sensor</li>
-</ul>
+        <li><b>Safety Sensors</b>:
+            <ul>
+                <li>Fire Detection</li>
+                <li>Smoke Detection</li>
+                <li>Gas Leak Detection</li>
+            </ul>
+        </li>
+        <li><b>Lighting</b>: LUX Sensor / Light Meter</li>
+    </ul>
 </td>
 </tr>
 </table> 
 
 
 ### Informasi Aplikasi: 
-- Python 3.10 =< 
-- MQTT Mosquitto
-- FLASK (WEB APP & REST FULL )
+**Core System:**
+- **Language**: Python 3.10 +
+- **Protocol**: MQTT using Mosquitto Broker
+- **Framework**: Flask (Micro-framework)
+- **Database**: SQLite (Default) / Support MySQL
 
-    ##### Python Package :
-    - Flask 
-    - Flask-SQLalchemy 
-    - Flask-Migrate 
-    - Flask-Login 
-    - Flask-Bcrypt
-    - Flask-WTF 
-    - paho-mqtt 
-    - requests 
-    - Flask-JWT-Extended 
-    - psutil 
-    - speedtest-cli
+**Frontend & UI:**
+- **Templating**: Jinja2
+- **Styling**: Bootstrap 3 + Custom CSS (Dark/Light support)
+- **Interactivity**: jQuery AJAX (Realtime Updates)
+- **Charts**: Flot Charts
+
+**Python Packages:**
+- `Flask`, `Flask-SQLAlchemy`, `Flask-Migrate`, `Flask-Login`
+- `Flask-Bcrypt` (Security), `Flask-WTF` (Forms)
+- `paho-mqtt` (IoT Communication)
+- `psutil` (System Monitoring), `speedtest-cli`
+
     #### Struktur File:
 ```
 .
