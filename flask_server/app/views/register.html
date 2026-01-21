@@ -1,0 +1,53 @@
+{% extends "layouts/auth.html" %}
+
+{% block content %}
+
+
+
+
+
+<div class="form-signin">
+    <div class="text-center">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Metis Logo" width="100px">
+        <h2>REGISTER</h2>
+    </div>
+    <hr>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} text-center">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="tab-content">
+        <div id="signup" class="tab-pane active">
+            <form action="{{ url_for('app.register') }}" method="post">
+                {{ form.csrf_token }}
+
+                <p class="text-muted text-center">
+                    Create your account
+                </p>
+
+                <input type="text" name="username" placeholder="Username" class="form-control mb-2" required>
+                <input type="email" name="email" placeholder="Email Address" class="form-control mb-2" required>
+
+                <input type="password" name="password" placeholder="Password" class="form-control mb-2" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" class="form-control mb-2" required>
+                <br>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <div class="text-center">
+        <p>Already have an account? <a href="{{ url_for('app.login') }}">Login here</a></p>
+    </div>
+</div>
+
+
+
+{% endblock %}

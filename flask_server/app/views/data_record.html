@@ -1,0 +1,509 @@
+{% extends 'layouts/app.html' %}
+
+
+{% block content %}
+<style>
+    .nav-tabs>li>a {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .nav-tabs>li.active>a,
+    .nav-tabs>li.active>a:hover,
+    .nav-tabs>li.active>a:focus {
+        color: #333;
+        font-weight: bold;
+        font-size: 14px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <div class="icons" style="color: #333;"><i class="fa fa-table"></i></div>
+                <h5 style="color: #333;">Data Record</h5>
+                <!-- Hidden data for JS -->
+                <div id="initial-records" style="display:none;"
+                    data-ids="[{% for record in records %}{{ record.id }}{% if not loop.last %},{% endif %}{% endfor %}]">
+                </div>
+            </header>
+            <div class="body" style="min-height: 60vh;">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#power" data-toggle="tab">Power</a></li>
+                    <li><a href="#environment" data-toggle="tab">Humidity-Temp</a></li>
+                    <li><a href="#weather" data-toggle="tab">Weather</a></li>
+                    <li><a href="#lux" data-toggle="tab">Lux</a></li>
+                    <li><a href="#fire" data-toggle="tab">Fire</a></li>
+                    <li><a href="#gas" data-toggle="tab">Gas</a></li>
+                    <li><a href="#smoke" data-toggle="tab">Smoke</a></li>
+                    <li><a href="#water" data-toggle="tab">Water</a></li>
+                    <li><a href="#ultrasonic" data-toggle="tab">Ultrasonic</a></li>
+                </ul>
+
+                <div class="tab-content" style="margin-top: 15px;">
+                    <div class="tab-pane fade in active" id="power">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTablePower">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Power (W)</th>
+                                        <th>Voltage (V)</th>
+                                        <th>Current (A)</th>
+                                        <th>Freq (Hz)</th>
+                                        <th>Energy (kWh)</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.power is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.power) if record.power is not none else "-" }}</td>
+                                        <td>{{ "%.2f"|format(record.voltage) if record.voltage is not none else "-" }}
+                                        </td>
+                                        <td>{{ "%.2f"|format(record.current) if record.current is not none else "-" }}
+                                        </td>
+                                        <td>{{ "%.2f"|format(record.frequency) if record.frequency is not none else "-"
+                                            }}</td>
+                                        <td>{{ "%.2f"|format(record.energy) if record.energy is not none else "-" }}
+                                        </td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="environment">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableEnv">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Humidity (%)</th>
+                                        <th>Temp (°C)</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.temperature is not none or record.humidity is not
+                                    none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.humidity) if record.humidity is not none else "-" }}
+                                        </td>
+                                        <td>{{ "%.2f"|format(record.temperature) if record.temperature is not none else
+                                            "-" }}
+                                        </td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="weather">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableWeather">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Weather</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.weather %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ record.weather if record.weather else "-" }}</td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="lux">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableLux">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Lux</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.lux is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.lux) if record.lux is not none else "-" }}</td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="fire">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableFire">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Temperature (°C)</th>
+                                        <th>Smoke Level</th>
+                                        <th>Status</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.fire is not none or record.temperature is not
+                                    none or record.smoke is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.temperature) if record.temperature is not none else
+                                            "-" }}</td>
+                                        <td>{{ "%.2f"|format(record.smoke) if record.smoke is not none else "-" }}</td>
+                                        <td>{{ "Detected" if record.fire == 1 else "Safe" if record.fire == 0 else "-"
+                                            }}</td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="gas">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableGas">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Gas (Mapped)</th>
+                                        <th>Gas PPM</th>
+                                        <th>Voltage (V)</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.gas is not none or record.gas_ppm is not none or
+                                    record.gas_voltage is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.gas) if record.gas is not none else "-" }}</td>
+                                        <td>{{ "%.2f"|format(record.gas_ppm) if record.gas_ppm is not none else "-" }}
+                                        </td>
+                                        <td>{{ "%.2f"|format(record.gas_voltage) if record.gas_voltage is not none else
+                                            "-" }}</td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="smoke">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableSmoke">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Smoke</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.smoke is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.smoke) if record.smoke is not none
+                                            else "-" }}</td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="water">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableWater">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Water Level</th>
+                                        <th>Total Volume</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.water_level is not none or
+                                    record.total_volume is
+                                    not none or record.water is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.water_level) if record.water_level
+                                            is not none else
+                                            ("%.2f"|format(record.water) if record.water is not none
+                                            else "-") }}</td>
+                                        <td>{{ "%.2f"|format(record.total_volume) if record.total_volume
+                                            is not none
+                                            else "-" }}</td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Tidak ada data
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="ultrasonic">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped"
+                                id="dataTableUltra">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Device ID</th>
+                                        <th>Distance (cm)</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if records %}
+                                    {% for record in records if record.distance is not none %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ record.device_id }}</td>
+                                        <td>{{ "%.2f"|format(record.distance) if record.distance is not none else "-" }}
+                                        </td>
+                                        <td>{{ record.created_at|wib_format }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Tidak ada data</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(function () {
+        console.log("Data Record Monitoring Started...");
+
+        // Initialize or get existing DataTables
+        const tables = {};
+        const tableIds = {
+            'power': '#dataTablePower',
+            'environment': '#dataTableEnv',
+            'weather': '#dataTableWeather',
+            'lux': '#dataTableLux',
+            'fire': '#dataTableFire',
+            'gas': '#dataTableGas',
+            'smoke': '#dataTableSmoke',
+            'water': '#dataTableWater',
+            'ultrasonic': '#dataTableUltra'
+        };
+
+        // Initialize each table
+        Object.keys(tableIds).forEach(function (key) {
+            const selector = tableIds[key];
+            if ($.fn.DataTable.isDataTable(selector)) {
+                tables[key] = $(selector).DataTable();
+            } else {
+                let sortCol = 3; // Default
+                if (key === 'power') sortCol = 7;
+                if (key === 'environment') sortCol = 4;
+                if (key === 'fire') sortCol = 5;
+                if (key === 'gas') sortCol = 5;
+                if (key === 'water') sortCol = 4;
+
+                tables[key] = $(selector).DataTable({
+                    "aaSorting": [[sortCol, 'desc']],
+                    "bStateSave": true
+                });
+            }
+        });
+
+        function formatValue(val) {
+            return (val !== null && val !== undefined) ? parseFloat(val).toFixed(2) : "-";
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return "-";
+            const date = new Date(dateStr);
+            return date.toLocaleString('id-ID');
+        }
+
+        // Populate known IDs
+        let knownIds = new Set();
+        const initialData = $('#initial-records').data('ids');
+        if (Array.isArray(initialData)) {
+            initialData.forEach(function (id) { knownIds.add(id); });
+        }
+        console.log("Initial records tracked:", knownIds.size);
+
+        function fetchLatestData() {
+            $.ajax({
+                url: '/api/records?limit=20',
+                method: 'GET',
+                cache: false,
+                success: function (data) {
+                    if (!data || !Array.isArray(data)) {
+                        console.log("No data received / Invalid format");
+                        return;
+                    }
+
+                    let addedCount = 0;
+                    data.forEach(function (record) {
+                        if (!knownIds.has(record.id)) {
+                            knownIds.add(record.id);
+                            addedCount++;
+
+                            const ts = formatDate(record.created_at);
+                            const label = '<span class="label label-info">NEW</span>';
+
+                            console.log("New record found! ID:", record.id, "Device:", record.device_id);
+
+                            if (record.power !== null) {
+                                tables['power'].row.add([label, record.device_id, formatValue(record.power), formatValue(record.voltage), formatValue(record.current), formatValue(record.frequency), formatValue(record.energy), ts]).draw(false);
+                            }
+                            if (record.temperature !== null || record.humidity !== null) {
+                                tables['environment'].row.add([label, record.device_id, formatValue(record.humidity), formatValue(record.temperature), ts]).draw(false);
+                            }
+                            if (record.weather) {
+                                tables['weather'].row.add([label, record.device_id, record.weather, ts]).draw(false);
+                            }
+                            if (record.lux !== null) {
+                                tables['lux'].row.add([label, record.device_id, formatValue(record.lux), ts]).draw(false);
+                            }
+                            if (record.fire !== null || record.smoke !== null) {
+                                tables['fire'].row.add([label, record.device_id, formatValue(record.temperature), formatValue(record.smoke), record.fire === 1 ? "Detected" : "Safe", ts]).draw(false);
+                            }
+                            if (record.gas_ppm !== null || record.gas_voltage !== null) {
+                                tables['gas'].row.add([label, record.device_id, formatValue(record.gas), formatValue(record.gas_ppm), formatValue(record.gas_voltage), ts]).draw(false);
+                            }
+                            if (record.smoke !== null) {
+                                tables['smoke'].row.add([label, record.device_id, formatValue(record.smoke), ts]).draw(false);
+                            }
+                            if (record.water_level !== null || record.water !== null) {
+                                tables['water'].row.add([label, record.device_id, formatValue(record.water_level || record.water), formatValue(record.total_volume), ts]).draw(false);
+                            }
+                            if (record.distance !== null) {
+                                tables['ultrasonic'].row.add([label, record.device_id, formatValue(record.distance), ts]).draw(false);
+                            }
+                        }
+                    });
+
+                    if (addedCount > 0) {
+                        console.log("Update Success: " + addedCount + " rows added.");
+                    }
+                },
+                error: function (err) {
+                    console.error("Polling error:", err);
+                }
+            });
+        }
+
+        // Check every 5 seconds
+        setInterval(fetchLatestData, 5000);
+    });
+</script>
+{% endblock %}

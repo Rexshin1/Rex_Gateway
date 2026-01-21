@@ -1,0 +1,13 @@
+flask
+flask-sqlalchemy
+flask-migrate
+paho-mqtt
+requests
+flask-login
+flask-bcrypt
+flask-wtf
+flask-jwt-extended
+psutil
+speedtest-cli
+python-dotenv
+APScheduler

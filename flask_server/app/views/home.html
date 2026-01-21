@@ -1,0 +1,394 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+<!-- /#left -->
+
+<div class="inner bg-light lter">
+    <div class="text-center">
+        <!-- BAGIAN STATS ATAS -->
+        <ul class="stats_box">
+            <li>
+                <div class="stat_text padding">
+                    <strong>CPU</strong>Temperature
+                    <span class="percent "><span id="temp">0</span> °C</span>
+                </div>
+            </li>
+            <li>
+                <div class="stat_text">
+                    <strong>CPU</strong>Usage
+                    <span class="percent "><span id="cpu_usage">0</span>%</span>
+                </div>
+            </li>
+            <li>
+                <div class="stat_text">
+                    <strong>MEMORY</strong>Usage
+                    <span class="percent"> <span id="memory">0</span>%</span>
+                </div>
+            </li>
+            <li>
+                <div class="stat_text">
+                    <strong>DISK</strong>Usage
+                    <span class="percent "> <span id="disk">0</span>%</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <hr>
+
+    <!-- BAGIAN TOMBOL CEPAT -->
+    <div class="text-center">
+        <a class="quick-btn" href="#">
+            <i class="fa fa-bolt fa-2x"></i>
+            <span>Power</span>
+            <span class="label label-primary">2</span>
+        </a>
+        <a class="quick-btn" href="#">
+            <i class="fa fa-water fa-2x"></i>
+            <span>Water</span>
+            <span class="label bg-blue lter">0</span>
+        </a>
+        <a class="quick-btn" href="#">
+            <i class="fa fa-building fa-2x"></i>
+            <span>Humidity</span>
+            <span class="label bg-green dker">0</span>
+        </a>
+        <a class="quick-btn" href="#">
+            <i class="fa fa-thermometer fa-2x"></i>
+            <span>Temp</span>
+            <span class="label bg-light dker">0</span>
+        </a>
+        <a class="quick-btn muted" href="#">
+            <i class="fa fa-cloud-rain fa-2x"></i>
+            <span>Weather</span>
+            <span class="label bg-green lt">0</span>
+        </a>
+        <a class="quick-btn " href="#">
+            <i class="fa fa-fire fa-2x"></i>
+            <span>Fire</span>
+            <span class="label bg-brick lter">2</span>
+        </a>
+        <a class="quick-btn" href="#">
+            <i class="fa fa-burn fa-2x"></i>
+            <span>Gas</span>
+            <span class="label bg-red dk">0</span>
+        </a>
+        <a class="quick-btn" href="#">
+            <i class="fas fa-smog fa-2x"></i>
+            <span>Smoke</span>
+            <span class="label label-default">0</span>
+        </a>
+        <a class="quick-btn" href="#">
+            <i class="fa fa-lightbulb fa-2x"></i>
+            <span>LUX</span>
+            <span class="label bg-orange lter">0</span>
+        </a>
+    </div>
+    <hr>
+
+
+
+    <!-- BAGIAN ROW UTAMA -->
+    <div class="row">
+        <!-- 1. LINE CHART (DIBALIKIN TAPI DIAM) -->
+        <div class="col-lg-4">
+            <div class="box inverse">
+                <header>
+                    <h5>Line Chart</h5>
+                </header>
+                <!-- Container Chart tetap ada -->
+                <div class="body" id="trigo" style="height: 250px;"></div>
+            </div>
+        </div>
+
+        <!-- 2. Network Device (Sesuai Mockup) -->
+        <div class="col-lg-4">
+            <div class="box">
+                <header>
+                    <h5>Network Device</h5>
+                </header>
+                <div class="body">
+                    <table class="table table-condensed table-hovered ">
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Ping</th>
+                            </tr>
+                        </thead>
+                        <tbody id="network_device_body">
+                            {% for d in devices %}
+                            <!-- Logika Warna Baris: Jika Status 1 (ON) biasa, Jika 0 (OFF) merah muda -->
+                            <tr class="{% if d.status == 0 %}danger{% endif %}">
+                                <td>{{ d.device_id }}</td>
+                                <td>{{ d.device_name }}</td>
+                                <!-- Status: Tampilkan ON/OFF -->
+                                <td>
+                                    {% if d.status == 1 %}
+                                    ON
+                                    {% else %}
+                                    OFF
+                                    {% endif %}
+                                </td>
+                                <td>{{ d.ping }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">No Devices Found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Last Record (Sesuai Mockup) -->
+        <div class="col-lg-4">
+            <div class="box inverse">
+                <header>
+                    <h5>Last Record</h5>
+                </header>
+                <div class="body">
+                    <table class="table table-condensed table-hovered ">
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Time</th> <!-- Di mockup judulnya kosong/time, isinya 00:00:15 -->
+                            </tr>
+                        </thead>
+                        <tbody id="last_record_body">
+                            {% for r in last_records %}
+                            <tr
+                                class="{% if loop.index == 3 %}danger{% elif loop.index == 4 %}warning{% elif loop.index == 7 %}success{% endif %}">
+                                <!-- Tampilkan ID dan Nama -->
+                                <td>{{ r.device_id }}</td>
+                                <td>{{ r.device_name_display }}</td>
+                                <td>
+                                    <!-- LOGIC SUPER LENGKAP UTK SEMUA SENSOR -->
+                                    {% set val = '-' %}
+
+                                    {# 1. Cek Type Device dulu (Lebih Spesifik) #}
+                                    {% if r.type_device %}
+                                    {% set type = r.type_device.lower() %}
+                                    {% if 'ultra' in type or 'dist' in type %} {% if r.distance != None %} {% set val =
+                                    r.distance ~ ' cm' %} {% endif %}
+                                    {% elif 'humi' in type %} {% if r.humidity != None %} {% set val = r.humidity ~ ' %'
+                                    %} {% endif %}
+                                    {% elif 'temp' in type %} {% if r.temperature != None %} {% set val = r.temperature
+                                    ~ ' °C' %} {% endif %}
+                                    {% elif 'power' in type or 'electric' in type %} {% if r.power != None %} {% set val
+                                    = r.power ~ ' W' %} {% endif %}
+                                    {% elif 'lux' in type or 'light' in type %} {% if r.lux != None %} {% set val =
+                                    r.lux ~ ' Lux' %} {% endif %}
+                                    {% elif 'gas' in type %} {% if r.gas != None %} {% set val = r.gas ~ ' (Gas)' %} {%
+                                    endif %}
+                                    {% elif 'smoke' in type %} {% if r.smoke != None %} {% set val = r.smoke ~ '
+                                    (Smoke)' %} {% endif %}
+                                    {% elif 'water' in type %} {% if r.water_level != None %} {% set val = r.water_level
+                                    ~ ' cm' %} {% endif %}
+                                    {% elif 'weath' in type %} {% if r.weather %} {% set val = r.weather %} {% endif %}
+                                    {% endif %}
+
+                                    {# 2. Fallback: Kalau masih '-', cari field apa aja yang ada isinya #}
+                                    {% if val == '-' %}
+                                    {% if r.distance != None %} {% set val = r.distance ~ ' cm' %}
+                                    {% elif r.temperature != None %} {% set val = r.temperature ~ ' °C' %}
+                                    {% elif r.humidity != None %} {% set val = r.humidity ~ ' %' %}
+                                    {% elif r.power != None %} {% set val = r.power ~ ' W' %}
+                                    {% elif r.lux != None %} {% set val = r.lux ~ ' Lux' %}
+                                    {% elif r.gas != None %} {% set val = r.gas ~ ' (Gas)' %}
+                                    {% elif r.smoke != None %} {% set val = r.smoke ~ ' (Smoke)' %}
+                                    {% elif r.water_level != None %} {% set val = r.water_level ~ ' cm' %}
+                                    {% elif r.weather %} {% set val = r.weather %}
+                                    {% elif r.fire != None %} {% set val = 'Fire!' if r.fire == 1 else 'Safe' %}
+                                    {% endif %}
+                                    {% endif %}
+
+                                    {{ val }}
+                                </td>
+                                <td>{{ r.created_at.strftime('%H:%M:%S') }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">No Data</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.inner -->
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+
+        // --- SETUP CHART (Biar Kotaknya Muncul) ---
+        let data = [];
+        const totalPoints = 100;
+
+        function updateData(newPoint) {
+            if (data.length > 0) data = data.slice(1);
+            data.push(newPoint);
+            while (data.length < totalPoints) {
+                data.unshift(0);
+            }
+            let res = [];
+            for (let i = 0; i < data.length; ++i) {
+                res.push([i, data[i]]);
+            }
+            return res;
+        }
+
+        const options = {
+            series: { shadowSize: 0 },
+            yaxis: { min: 0, max: 100 },
+            xaxis: { show: false },
+        };
+
+        // GAMBAR CHART KOSONG SEKALI SAJA (Biar bingkainya ada)
+        // Kita isi 0 semua biar garisnya datar di bawah
+        const plot = $.plot($("#trigo"), [updateData(0)], options);
+
+
+        // --- UPDATE ANGKA SYSTEM (Tanpa Menggerakkan Grafik) ---
+        function updateSystemStats() {
+            $.ajax({
+                url: '/api/system_stats',
+                type: 'GET',
+                success: function (response) {
+                    // Update Text Angka (Persen CPU, Memory, Disk, Temp)
+                    $('#cpu_usage').text(response.cpu);
+                    $('#memory').text(response.ram);
+                    $('#disk').text(response.disk);
+                    $('#temp').text(response.temp);
+
+                    // SAYA HAPUS BAGIAN plot.setData()
+                    // Jadi grafik "kuning" tidak akan berjalan/gerak lagi.
+                },
+                error: function (error) {
+                    console.log("Gagal ambil stats lokal.");
+                }
+            });
+        }
+
+        // Update angka setiap 2 detik
+        setInterval(updateSystemStats, 2000);
+        updateSystemStats();
+
+        // --- LIVE DASHBOARD UPDATE (New) ---
+        function updateDashboardTables() {
+            $.ajax({
+                url: '/api/dashboard_updates',
+                type: 'GET',
+                success: function (data) {
+                    // A. Update Network Device
+                    let deviceRows = "";
+                    if (data.devices.length > 0) {
+                        data.devices.forEach(function (d) {
+                            let statusClass = (d.status == 0) ? 'danger' : '';
+                            let statusText = (d.status == 1) ? 'ON' : 'OFF';
+                            deviceRows += `<tr class="${statusClass}">
+                                <td>${d.device_id}</td>
+                                <td>${d.device_name}</td>
+                                <td>${statusText}</td>
+                                <td>${d.ping}</td>
+                           </tr>`;
+                        });
+                    } else {
+                        deviceRows = '<tr><td colspan="4" class="text-center">No Devices Found</td></tr>';
+                    }
+                    $('#network_device_body').html(deviceRows);
+
+                    // B. Update Last Record
+                    let recordRows = "";
+                    if (data.last_records.length > 0) {
+                        data.last_records.forEach(function (r, index) {
+                            // Warna-warni logic
+                            let i = index + 1;
+                            let rowClass = "";
+                            if (i == 3) rowClass = "danger";
+                            else if (i == 4) rowClass = "warning";
+                            else if (i == 7) rowClass = "success";
+
+                            // --- LOGIC SUPER LENGKAP UTK SEMUA SENSOR (JS VERSION) ---
+                            let val = "-";
+
+                            // 1. Cek Type Device dulu (Lebih Spesifik)
+                            if (r.type_device) {
+                                let type = r.type_device.toLowerCase();
+                                if ((type.includes('ultra') || type.includes('dist')) && r.distance != null) val = r.distance + " cm";
+                                else if (type.includes('humi') && r.humidity != null) val = r.humidity + " %";
+                                else if (type.includes('temp') && r.temperature != null) val = r.temperature + " °C";
+                                else if ((type.includes('power') || type.includes('electric')) && r.power != null) val = r.power + " W";
+                                else if ((type.includes('lux') || type.includes('light')) && r.lux != null) val = r.lux + " Lux";
+                                else if (type.includes('gas') && r.gas != null) val = r.gas + " (Gas)";
+                                else if (type.includes('smoke') && r.smoke != null) val = r.smoke + " (Smoke)";
+                                else if (type.includes('water') && r.water_level != null) val = r.water_level + " cm";
+                                else if (type.includes('weath') && r.weather) val = r.weather;
+                            }
+
+                            // 2. Fallback: Kalau masih "-", cari field apa aja yang ada isinya
+                            if (val === "-") {
+                                if (r.distance != null) val = r.distance + " cm";
+                                else if (r.temperature != null) val = r.temperature + " °C"; // Temp priority high
+                                else if (r.humidity != null) val = r.humidity + " %";
+                                else if (r.power != null) val = r.power + " W";
+                                else if (r.lux != null) val = r.lux + " Lux";
+                                else if (r.gas != null) val = r.gas + " (Gas)";
+                                else if (r.smoke != null) val = r.smoke + " (Smoke)";
+                                else if (r.water_level != null) val = r.water_level + " cm";
+                                else if (r.weather) val = r.weather;
+                                else if (r.fire != null) val = (r.fire == 1) ? "Fire!" : "Safe";
+                            }
+
+                            recordRows += `<tr class="${rowClass}">
+                                <td>${r.device_id}</td>
+                                <td>${r.device_name_display}</td>
+                                <td>${val}</td>
+                                <td>${r.created_at_fmt}</td>
+                           </tr>`;
+                        });
+                    } else {
+                        recordRows = '<tr><td colspan="4" class="text-center">No Data</td></tr>';
+                    }
+                    $('#last_record_body').html(recordRows);
+                }
+            });
+        }
+        setInterval(updateDashboardTables, 2000);
+
+
+        // --- MQTT SCRIPT ---
+        const client = mqtt.connect('ws://{{ hostmqtt }}:8181');
+
+        client.on('connect', function () {
+            $('#status').text('Connected');
+            const topic = 'GWLK20241210000001/status';
+            client.subscribe(topic, function (err) {
+                if (!err) {
+                    console.log(`Subscribed to topic: ${topic}`);
+                }
+            });
+        });
+
+        client.on('message', function (topic, message) {
+            data = JSON.parse(message.toString());
+            // Update Text kalau ada data MQTT
+            $('#temp').text(Number(data.temperature).toFixed(2));
+            $('#cpu_usage').text(Number(data.cpu_usage).toFixed(2));
+            $('#memory').text(Number(data.memory).toFixed(2));
+            $('#disk').text(Number(data.disk).toFixed(2));
+        });
+
+    });
+</script>
+{% endblock %}

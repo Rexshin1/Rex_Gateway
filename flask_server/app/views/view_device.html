@@ -1,0 +1,48 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <div class="box">
+            <header>
+                <div class="icons"><i class="fa fa-eye"></i></div>
+                <h5>Detail Device</h5>
+            </header>
+            <div class="body">
+                <div class="form-group">
+                    <label for="device_id">Device ID</label>
+                    <input type="text" class="form-control" id="device_id" value="{{ device['device_id'] }}" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label for="device_name">Device Name</label>
+                    <input type="text" class="form-control" id="device_name" value="{{ device['device_name'] }}" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type_device">Type Device</label>
+                    <input type="text" class="form-control" id="type_device" value="{{ device['type_device'] }}" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <input type="text" class="form-control" id="status" value="{% if device['status']==1 %}ON{% else %}OFF{% endif %}" disabled>
+                </div>
+
+                <hr>
+                
+                <div class="form-group">
+                    <a href="{{ url_for('app.edit_device', device_id=device['device_id']) }}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{{ url_for('app.list_device') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topologi Jaringan dengan Ikon</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        svg {
+            border: 1px solid lightgray;
+        }
+        .node-icon {
+            font-size: 24px; /* Ukuran ikon */
+            text-anchor: middle; /* Pusatkan ikon secara horizontal */
+            dominant-baseline: central; /* Pusatkan ikon secara vertikal */
+        }
+        .link {
+            stroke: #999;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Topologi Jaringan dengan Ikon</h2>
+    <svg width="800" height="600"></svg>
+    <script>
+        // 1. Data Node (perangkat jaringan) dengan ikon
+const nodes = [
+    { id: "Router", group: "router", icon: "\uf6a8" }, // Router: Ikon jaringan
+    { id: "Switch 1", group: "switch", icon: "\uf6ff" }, // Switch: Ikon Ethernet
+    { id: "Switch 2", group: "switch", icon: "\uf6ff" },
+    { id: "PC 1", group: "pc", icon: "\uf109" }, // PC: Ikon desktop
+    { id: "PC 2", group: "pc", icon: "\uf109" },
+    { id: "PC 3", group: "pc", icon: "\uf109" },
+    { id: "PC 4", group: "pc", icon: "\uf109" },
+    { id: "Server", group: "server", icon: "\uf233" }, // Server: Ikon server
+];
+
+// 2. Data Link (koneksi antar perangkat)
+const links = [
+    { source: "Router", target: "Switch 1" },
+    { source: "Router", target: "Switch 2" },
+    { source: "Switch 1", target: "PC 1" },
+    { source: "Switch 1", target: "PC 2" },
+    { source: "Switch 1", target: "PC 3" },
+    { source: "Switch 1", target: "PC 4" },
+    { source: "Switch 2", target: "Server" },
+];
+// 1. Tentukan ukuran dan elemen SVG
+const svg = d3.select("svg");
+const width = +svg.attr("width");
+const height = +svg.attr("height");
+
+// 2. Simulasi gaya (physics simulation)
+const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(100)) // Koneksi antar node
+    .force("charge", d3.forceManyBody().strength(-150)) // Tolakan antar node
+    .force("center", d3.forceCenter(width / 2, height / 2)); // Pusatkan graf
+
+// 3. Gambar koneksi (link)
+const link = svg.append("g")
+    .attr("class", "links")
+    .selectAll("line")
+    .data(links)
+    .enter()
+    .append("line")
+    .attr("class", "link");
+
+// 4. Gambar node (perangkat) dengan ikon
+const node = svg.append("g")
+    .attr("class", "nodes")
+    .selectAll("g")
+    .data(nodes)
+    .enter()
+    .append("g")
+    .call(
+        d3.drag() // Fungsi drag
+            .on("start", dragStarted)
+            .on("drag", dragged)
+            .on("end", dragEnded)
+    );
+
+// 5. Tambahkan ikon Font Awesome pada node
+node.append("text")
+    .attr("class", "node-icon")
+    .attr("font-family", "FontAwesome") // Gunakan Font Awesome
+    .attr("fill", d => {
+        switch (d.group) {
+            case "router": return "red";
+            case "switch": return "blue";
+            case "pc": return "green";
+            case "server": return "orange";
+            default: return "gray";
+        }
+    })
+    .text(d => d.icon);
+
+// 6. Tambahkan label perangkat
+node.append("text")
+    .attr("x", 0)
+    .attr("y", 30)
+    .attr("text-anchor", "middle")
+    .text(d => d.id);
+
+// 7. Update posisi node dan link selama simulasi
+simulation.on("tick", () => {
+    link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node.attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+// Fungsi drag
+function dragStarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+}
+
+function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+}
+
+function dragEnded(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+}
+
+    </script>
+</body>
+</html>

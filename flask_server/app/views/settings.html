@@ -1,0 +1,623 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+<style>
+    /* Minimal Custom Overrides - Relying on Theme Classes */
+    .mapping-box {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        height: 250px;
+        overflow-y: auto;
+    }
+
+    .mapping-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 8px;
+        align-items: center;
+    }
+
+    .live-preview-box {
+        background: #222;
+        /* Keep dark for "Term" feel */
+        color: #0f0;
+        font-family: 'Courier New', monospace;
+        padding: 10px;
+        font-size: 11px;
+        height: 120px;
+        overflow: auto;
+        border: 1px solid #444;
+        margin-top: 5px;
+        white-space: pre-wrap;
+    }
+
+    .preview-header {
+        background: #444;
+        color: #fff;
+        padding: 5px 10px;
+        font-size: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="inner bg-light lter">
+
+
+
+    <!-- 1. GENERAL IDENTITY (BOX 1) -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box">
+                <header>
+                    <div class="icons"><i class="fa fa-id-card"></i></div>
+                    <h5>General Identity</h5>
+                    <div class="toolbar">
+                        <a href="javascript:;" class="btn btn-default btn-sm minimize-box">
+                            <i class="fa fa-angle-up"></i>
+                        </a>
+                    </div>
+                </header>
+
+                <div class="body">
+                    <form action="{{ url_for('app.settings') }}" method="POST" class="form-horizontal">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">Gateway Name (ID)</label>
+                            <div class="col-lg-6">
+                                <input type="text" value="{{ config.device_id }}" class="form-control" disabled>
+                                <span class="help-block">This ID is set in your .env file.</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">Fallback Cloud URL</label>
+                            <div class="col-lg-6">
+                                <input type="text" name="host_api" value="{{ config.host_api }}" class="form-control">
+                                <span class="help-block">Used if no custom endpoints are active.</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">Global API Token</label>
+                            <div class="col-lg-6">
+                                <input type="text" name="token_api" value="{{ config.token_api or '' }}"
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-lg-9 col-lg-offset-3">
+                                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Save
+                                        Identity</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. CLOUD ENDPOINTS (BOX 2 - MAIN FEATURE) -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box">
+                <header>
+                    <div class="icons"><i class="fa fa-cloud-upload-alt"></i></div>
+                    <h5>Cloud Endpoints</h5>
+                    <div class="toolbar">
+                        <button class="btn btn-success btn-xs" onclick="openAddModal()"
+                            style="margin-top: 5px; margin-right: 5px;">
+                            <i class="fa fa-plus"></i> Add Endpoint
+                        </button>
+                    </div>
+                </header>
+
+                <div class="body">
+                    <p class="text-muted">Manage multiple destination servers and data mapping.</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th width="5%" class="text-center">Status</th>
+                                <th width="20%">Endpoint Name</th>
+                                <th width="30%">Target URL</th>
+                                <th width="20%">Mapping Strategy</th>
+                                <th width="15%" class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ep in endpoints %}
+                            <tr>
+                                <td class="text-center">
+                                    <a href="{{ url_for('app.toggle_endpoint', id=ep.id) }}">
+                                        {% if ep.is_active %}
+                                        <span class="label label-success"><i class="fa fa-check"></i> ON</span>
+                                        {% else %}
+                                        <span class="label label-default"><i class="fa fa-power-off"></i> OFF</span>
+                                        {% endif %}
+                                    </a>
+                                </td>
+                                <td style="vertical-align: middle;"><strong>{{ ep.name }}</strong></td>
+                                <td style="vertical-align: middle;"><code>{{ ep.url }}</code></td>
+
+                                <!-- PARSE JSON MAPPING FOR DISPLAY -->
+                                <td style="vertical-align: middle;">
+                                    {% if ep.mapping and ep.mapping != '{}' %}
+                                    <i class="fa fa-random text-info"></i> Custom Map
+                                    {% else %}
+                                    <i class="fa fa-arrow-right text-muted"></i> Direct Forward
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-xs btn-info"
+                                        data-endpoint='{{ ep.to_dict() | tojson | safe }}'
+                                        onclick='editEndpoint(JSON.parse(this.dataset.endpoint))'>
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <a href="{{ url_for('app.delete_endpoint', id=ep.id) }}"
+                                        class="btn btn-xs btn-danger"
+                                        onclick="return confirm('Delete this endpoint?')"><i
+                                            class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted" style="padding: 20px;">
+                                    <i class="fa fa-info-circle"></i> No endpoints configured. Add one to start sending
+                                    data.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="text-right">
+        <button class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Factory Reset Data</button>
+    </div>
+</div>
+
+<!-- HIGH-FIDELITY MODAL -->
+<div id="addEndpointModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="width: 90%;">
+        <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+
+            <!-- HEADER: Standard Theme Color -->
+            <div class="modal-header bg-primary" style="color:white;">
+                <button type="button" class="close" data-dismiss="modal"
+                    style="color:white; opacity: 0.8;">&times;</button>
+                <h4 class="modal-title" style="font-weight: bold; letter-spacing: 1px;">
+                    <i class="fa fa-satellite-dish"></i> ENDPOINT CONFIGURATION
+                </h4>
+            </div>
+
+            <form id="endpointForm" action="{{ url_for('app.add_endpoint') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <!-- ID for EDIT MODE -->
+                <input type="hidden" id="endpoint_id" name="endpoint_id" value="" />
+
+                <!-- Hidden Input for Preset Type -->
+                <input type="hidden" id="presetInput" name="preset_type" value="">
+                <input type="hidden" name="mapping" id="mappingInput">
+
+                <div class="modal-body" style="background-color: #f9f9f9; padding: 25px;">
+                    <div class="row">
+                        <!-- LEFT COL: IDENTITY -->
+                        <div class="col-md-4" style="border-right: 1px solid #ddd;">
+                            <h5 class="text-primary"
+                                style="font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+                                1. Basic Info</h5>
+
+                            <div class="form-group">
+                                <label style="font-size: 11px; color: #888;">Endpoint Name</label>
+                                <input type="text" name="name" class="form-control"
+                                    placeholder="e.g. Endpoint Power Panel" required style="font-weight: bold;">
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size: 11px; color: #888;">Target URL (POST)</label>
+                                <input type="url" name="url" class="form-control"
+                                    placeholder="http://api.myserver.com/..." required
+                                    style="font-family: monospace; color: #d35400;">
+                            </div>
+
+                            <div class="form-group" style="margin-top:20px;">
+                                <div class="checkbox">
+                                    <label style="font-weight: bold;">
+                                        <input type="checkbox" id="syncHistoryCheck" name="sync_history"> <span
+                                            class="text-danger">Sync Historical Data Now?</span>
+                                    </label>
+                                    <p class="help-block" style="font-size:10px; line-height:1.2;">
+                                        Will send all existing data of this type to this URL immediately upon saving.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top:10px;">
+                                <label style="font-size: 11px; color: #888;">Cloud Connection Status</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="is_active" checked> <span class="text-success"
+                                            style="font-weight:bold;">Enable Auto-Sync</span>
+                                        <p class="help-block" style="font-size:10px; margin:0;">Uncheck to stop sending
+                                            data to this server.</p>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <h5 class="text-primary"
+                                style="font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                Headers</h5>
+                            <div class="form-group">
+                                <label style="font-size: 11px; color: #888;">JSON Format (Optional)</label>
+                                <textarea name="headers" class="form-control" rows="3"
+                                    placeholder='{"Authorization": "Bearer token..."}'
+                                    style="font-family: monospace; font-size: 11px;"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COL: MAPPING -->
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="text-primary"
+                                        style="font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+                                        2. JSON Payload Mapping</h5>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div class="form-inline">
+                                        <label style="font-size: 11px; color:#777; margin-right:5px;">Load
+                                            Preset:</label>
+                                        <select class="form-control input-sm" id="templateSelect"
+                                            onchange="applyTemplate()" style="width: 150px;">
+                                            <option value="">-- Select Type --</option>
+                                            <option value="all">ALL Data Types</option>
+                                            <option value="power">Power Meter</option>
+                                            <option value="water">Water Sensor</option>
+                                            <option value="humidity_temp">Humidity-Temp Sensor</option>
+                                            <option value="gas">Gas Sensor</option>
+                                            <option value="smoke">Smoke Sensor</option>
+                                            <option value="fire">Fire Sensor</option>
+                                            <option value="weather">Weather Station</option>
+                                            <option value="lux">Lux Sensor</option>
+                                            <option value="ultrasonic">Ultrasonic Sensor</option>
+                                        </select>
+                                        <button type="button" class="btn btn-success btn-sm" onclick="addMappingRow()">
+                                            <i class="fa fa-plus"></i> Manual Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p style="font-size: 12px; color:#666;">Map internal data to your custom JSON keys.</p>
+
+                            <!-- DYNAMIC MAPPING TABLE -->
+                            <div class="mapping-box">
+                                <div
+                                    style="display:flex; font-size: 11px; font-weight:bold; color:#777; margin-bottom:5px; padding-left:5px;">
+                                    <div style="flex:1;">TARGET JSON KEY</div>
+                                    <div style="width:20px;"></div>
+                                    <div style="flex:1;">SOURCE VALUE</div>
+                                    <div style="width:30px;"></div>
+                                </div>
+
+                                <div id="mappingContainer">
+                                    <!-- Default Rows -->
+                                </div>
+                            </div>
+
+                            <!-- LIVE PREVIEW -->
+                            <div class="preview-header text-center" style="margin-top: 15px;">LIVE OUTPUT PREVIEW</div>
+                            <div class="live-preview-box" id="jsonPreview">
+                                {
+                                "gw_id": "Rex Gateway",
+                                "payload": { ... }
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer"
+                    style="border-top: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="text-left">
+                        <button type="button" class="btn btn-warning" onclick="testConnection()">
+                            <i class="fa fa-plug"></i> Test Connection
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="submitEndpointForm()">
+                            <i class="fa fa-save"></i> Save Configuration
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TEST RESULT CONTAINER -->
+                <div id="testResultContainer"
+                    style="display:none; padding: 15px; background: #333; color: #fff; border-top: 1px solid #555;">
+                    <button type="button" class="close" onclick="$('#testResultContainer').hide()"
+                        style="color:white;">&times;</button>
+                    <h5 style="margin-top:0;"><i class="fa fa-exchange-alt"></i> Test Result</h5>
+                    <div id="testResultContent"
+                        style="font-family: monospace; font-size: 11px; max-height: 150px; overflow-y: auto;">
+                        Testing...
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // EDIT FUNCTIONALITY
+    function editEndpoint(epData) {
+        // Reset Logic
+        $('#mappingContainer').html('');
+        $('#presetInput').val('');
+        $('#syncHistoryCheck').prop('checked', false);
+
+        // Populate Basic Fields
+        $('#endpoint_id').val(epData.id);
+        $('input[name="name"]').val(epData.name);
+        $('input[name="url"]').val(epData.url);
+        $('textarea[name="headers"]').val(epData.headers || '');
+        $('input[name="is_active"]').prop('checked', epData.is_active);
+
+        // Populate Mapping
+        if (epData.mapping && epData.mapping !== '{}') {
+            try {
+                const mapping = JSON.parse(epData.mapping);
+                for (const [key, source] of Object.entries(mapping)) {
+                    addMappingRow(key, source);
+                }
+            } catch (e) { console.error("Error parsing mapping", e); }
+        }
+
+        updatePreview();
+        $('#addEndpointModal').modal('show');
+    }
+
+    function testConnection() {
+        // Collect Data manually
+        const url = $('input[name="url"]').val();
+        const headers = $('textarea[name="headers"]').val();
+
+        // Collect Mapping
+        let mapping = {};
+        $('#mappingContainer .mapping-row').each(function () {
+            const key = $(this).find('.target-key').val();
+            const source = $(this).find('.source-select').val();
+            if (key) mapping[key] = source;
+        });
+        const mappingStr = JSON.stringify(mapping);
+
+        if (!url) {
+            alert("Please enter a Target URL first.");
+            return;
+        }
+
+        // UI Loading
+        $('#testResultContainer').show();
+        $('#testResultContent').html('<span class="text-warning"><i class="fa fa-spinner fa-spin"></i> Sending Request...</span>');
+
+        // AJAX
+        $.ajax({
+            url: "{{ url_for('app.test_connection') }}",
+            type: "POST",
+            data: {
+                url: url,
+                headers: headers,
+                mapping: mappingStr,
+                csrf_token: "{{ csrf_token() }}"
+            },
+            success: function (resp) {
+                let color = (resp.status >= 200 && resp.status < 300) ? 'text-success' : 'text-danger';
+                let html = `
+                <div><strong>Status Code:</strong> <span class="${color}">${resp.status}</span></div>
+                <div><strong>Message:</strong> ${resp.message}</div>
+                <hr style="margin: 5px 0; border-color: #555;">
+                <div><strong>Sent Payload:</strong></div>
+                <pre style="background: #222; border:none; color: #ccc; padding: 5px; margin:0;">${JSON.stringify(resp.sent_payload, null, 2)}</pre>
+            `;
+                $('#testResultContent').html(html);
+            },
+            error: function (err) {
+                $('#testResultContent').html('<span class="text-danger">AJAX Error: ' + err.statusText + '</span>');
+            }
+        });
+    }
+
+
+</script>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    // DEFINE SOURCE OPTIONS
+    const sourceOptions = [
+        { val: "FULL_PAYLOAD", label: "FULL Data Object (All Fields)" },
+        { val: "device_id", label: "device_id" },
+        { val: "power", label: "power" },
+        { val: "voltage", label: "voltage" },
+        { val: "current", label: "current" },
+        { val: "energy", label: "energy" },
+        { val: "frequency", label: "frequency" },
+        { val: "temperature", label: "temperature" },
+        { val: "humidity", label: "humidity" },
+        { val: "lux", label: "lux" },
+        { val: "gas", label: "gas" },
+        { val: "gas_ppm", label: "gas_ppm" },
+        { val: "gas_voltage", label: "gas_voltage" },
+        { val: "smoke", label: "smoke" },
+        { val: "fire", label: "fire" },
+        { val: "water", label: "water" },
+        { val: "water_level", label: "water_level" },
+        { val: "total_volume", label: "total_volume" },
+        { val: "weather", label: "weather" },
+        { val: "distance", label: "distance (ultrasonic)" },
+        { val: "created_at", label: "created_at" }
+    ];
+
+    function applyTemplate() {
+        const type = $('#templateSelect').val();
+        if (!type) return;
+
+        // Set Hidden Input for Backend to know which type of data to sync
+        $('#presetInput').val(type);
+
+        // Auto check the sync box for convenience
+        $('#syncHistoryCheck').prop('checked', true);
+
+        // Confirm overwrite if rows exist
+        if ($('#mappingContainer').children().length > 0) {
+            if (!confirm("Replace current mapping with this preset?")) {
+                $('#templateSelect').val("");
+                return;
+            }
+        }
+
+        $('#mappingContainer').html(''); // Clear existing
+
+        let fields = [];
+        // Define Presets
+        if (type === 'all') {
+            // Add ALL fields from all types
+            fields = ['power', 'voltage', 'current', 'energy', 'frequency',
+                'water_level', 'total_volume', 'water',
+                'gas', 'gas_ppm', 'gas_voltage',
+                'smoke', 'fire', 'temperature',
+                'weather', 'humidity', 'lux'];
+        }
+        if (type === 'power') fields = ['power', 'voltage', 'current', 'energy', 'frequency'];
+        if (type === 'water') fields = ['water_level', 'total_volume', 'water'];
+        if (type === 'humidity_temp') fields = ['humidity', 'temperature'];
+        if (type === 'gas') fields = ['gas', 'gas_ppm', 'gas_voltage'];
+        if (type === 'smoke') fields = ['smoke'];
+        if (type === 'fire') fields = ['fire', 'temperature', 'smoke'];
+        if (type === 'weather') fields = ['weather', 'temperature', 'humidity'];
+        if (type === 'lux') fields = ['lux'];
+        if (type === 'ultrasonic') fields = ['distance'];
+
+        // Always add device_id
+        addMappingRow('device_id', 'device_id');
+
+        // Add specific fields
+        fields.forEach(f => {
+            // Avoid duplicate keys if lists overlap (e.g. temperature)
+            if ($('#mappingContainer').find('.target-key[value="' + f + '"]').length === 0) {
+                addMappingRow(f, f);
+            }
+        });
+
+        // Add Timestamp
+        addMappingRow('timestamp', 'created_at');
+
+        updatePreview();
+    }
+
+    function openAddModal() {
+        $('#addEndpointModal').modal('show');
+        // Reset - Default is EMPTY (Direct Forward / Standard Payload)
+        $('#mappingContainer').html('');
+        $('#presetInput').val(''); // Reset
+        $('#endpoint_id').val(''); // CLEAR ID for NEW MODE
+        $('input[name="name"]').val('');
+        $('input[name="url"]').val('');
+        $('textarea[name="headers"]').val('');
+        $('input[name="is_active"]').prop('checked', true);
+        $('#syncHistoryCheck').prop('checked', false); // Reset
+
+        // addMappingRow('gw_id', 'device_id'); // Removed to match "Standard" request
+        // addMappingRow('payload', 'FULL_PAYLOAD');
+        updatePreview();
+    }
+
+    function addMappingRow(key = '', val = '') {
+        const rowId = 'row_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+        let selectHtml = `<select class="form-control input-sm source-select" onchange="updatePreview()">`;
+        sourceOptions.forEach(opt => {
+            const selected = (opt.val === val) ? 'selected' : '';
+            selectHtml += `<option value="${opt.val}" ${selected}>${opt.label}</option>`;
+        });
+        selectHtml += `</select>`;
+
+        const html = `
+        <div class="mapping-row" id="${rowId}">
+            <input type="text" class="form-control input-sm target-key" value="${key}" placeholder="e.g. data_value" onkeyup="updatePreview()">
+            <div class="arrow-icon"><i class="fa fa-arrow-right"></i></div>
+            ${selectHtml}
+            <button type="button" class="btn btn-xs btn-danger btn-flat" onclick="removeRow('${rowId}')"><i class="fa fa-times"></i></button>
+        </div>`;
+
+        $('#mappingContainer').append(html);
+        updatePreview();
+    }
+
+    function removeRow(id) {
+        $('#' + id).remove();
+        updatePreview();
+    }
+
+    function updatePreview() {
+        let previewObj = {};
+        let hasMapping = false;
+
+        $('#mappingContainer .mapping-row').each(function () {
+            const key = $(this).find('.target-key').val();
+            const source = $(this).find('.source-select').val();
+
+            if (key) {
+                hasMapping = true;
+                // Mock Data for Preview
+                let mockVal = 0;
+                if (source === 'device_id') mockVal = "ID_001";
+                if (source === 'FULL_PAYLOAD') mockVal = { "attr": 123 };
+                if (source === 'power') mockVal = 220.5;
+                if (source === 'voltage') mockVal = 221;
+
+                previewObj[key] = mockVal; // Just show description for now or mock value
+            }
+        });
+
+        if (!hasMapping) {
+            // SHOW STANDARD PAYLOAD PREVIEW
+            previewObj = {
+                "device_id": "ID_001",
+                "power": 220.5,
+                "current": 10.2,
+                "voltage": 221,
+                "...": "..."
+            };
+        }
+
+        // Pretty Print
+        $('#jsonPreview').text(JSON.stringify(previewObj, null, 2));
+    }
+
+    function submitEndpointForm() {
+        // Collect Mapping Data
+        let mapping = {};
+        $('#mappingContainer .mapping-row').each(function () {
+            const key = $(this).find('.target-key').val();
+            const source = $(this).find('.source-select').val();
+            if (key) {
+                mapping[key] = source;
+            }
+        });
+
+        $('#mappingInput').val(JSON.stringify(mapping));
+        document.getElementById('endpointForm').submit();
+    }
+</script>
+{% endblock %}
